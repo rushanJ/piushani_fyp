@@ -84,6 +84,34 @@ class FileAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateM
             x = {"status": "Error", "message": "SOMETHING  WENT WRANG !"}
             json_format = json.dumps(x)
             return HttpResponse(json_format, content_type="application/json",status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    def get(self, request, *args, **kwargs):
+        try:
+            age= float(request.query_params.get("age"))
+            area= float(request.query_params.get("area"))
+            total_weight= float(request.query_params.get("total_weight"))
+            no_of_birds= float(request.query_params.get("no_of_birds"))
+            av_weight= total_weight/no_of_birds
+            avfeed= float(request.query_params.get("avfeed"))
+            fcr= av_weight/avfeed
+
+            print(age,area,total_weight, no_of_birds,av_weight,avfeed,fcr)
+            lrRes = predictLR(age,area,total_weight, no_of_birds,av_weight,avfeed,fcr)
+            frRes = predictRF(age,area,total_weight, no_of_birds,av_weight,avfeed,fcr)
+            nnRes = predictNN(age, area, total_weight, no_of_birds, av_weight, avfeed, fcr)
+
+
+            finalRes = (nnRes[0] + frRes[0] + lrRes[0]) / 3
+            print("Final Result : ", finalRes)
+            x = {"status": "Success", "message":str( round(finalRes[0]))}
+            json_format = json.dumps(x)
+            return HttpResponse(json_format)
+
+
+        except Exception as e:
+            logger.error(e)
+            x = {"status": "Error", "message": "SOMETHING  WENT WRANG !"}
+            json_format = json.dumps(x)
+            return HttpResponse(json_format, content_type="application/json",status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
     def put(self, request, *args, **kwargs):
