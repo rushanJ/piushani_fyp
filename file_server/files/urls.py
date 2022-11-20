@@ -7,8 +7,6 @@ urlpatterns = [
     # path('generic/user/', UserAPIView.as_view()),
 
     path('', FileAPIView.as_view()),
-    path('download/<int:id>/', FileAPIView.as_view()),
-    path('<int:pk>/', FileAPIView.as_view()),
 
 
 
