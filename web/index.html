@@ -20,6 +20,9 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
 
 </head>
 
@@ -128,31 +131,44 @@
                                
                             </div>
 
-                            <button type="submit" onclick="getResult()" class="btn btn-primary mb-2">getResult</button>
+                            <button type="submit" onclick="getResult()" class="btn btn-primary mb-2"  data-toggle="modal" data-target="#exampleModal">getResult</button>
 
                         </div>
                         <br><br><br><br>
-                        gfhvg
+                  
+                       
+                          <!-- Modal -->
+                          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Result</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                   <h2>Health Status: </h2> 
+                                    <div id="result">loading  </div>
+                                    <h2>Health Tip: </h2> 
+                                    <p id="tip">loading  </p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                 
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     </div>
 
                     <script> 
                     function getResult() {
-//                         {
-//     age: document.getElementById("age").value,
-//     area: document.getElementById("area").value,
-//     total_weight: document.getElementById("total_weight").value,
-//     no_of_birds: document.getElementById("no_of_birds").value,
-//     avfeed: document.getElementById("avfeed").value,
-//   }
+                        var result=0;
+                        document.getElementById("result").innerHTML="Loading...";
+                        document.getElementById("tip").innerHTML="Loading...";
+                        
 
-const Http = new XMLHttpRequest();
-const url='http://localhost:8000/api/file/?age=4&area=4&total_weight=7.5&no_of_birds=5&avfeed=1.45';
-Http.open("GET", url);
-Http.send();
-
-Http.onreadystatechange = (e) => {
-  console.log(Http.responseText)
-}
                         try {
                             // const axios = require('axios').default;
                             var bodyFormData = new FormData();
@@ -162,16 +178,24 @@ Http.onreadystatechange = (e) => {
                             bodyFormData.append('no_of_birds', document.getElementById("no_of_birds").value);
                             bodyFormData.append('avfeed', document.getElementById("avfeed").value);
 
-                            // axios.post('http://localhost:8000/api/file/',data: bodyFormData, )
                             axios({
-                            method: "get",
-                            url: "http://localhost:8000/api/file/?age=4&area=4&total_weight=7.5&no_of_birds=5&avfeed=1.45",
-                            // data: bodyFormData,
-                            // headers: { "Content-Type": "multipart/form-data"},
+                            method: "POST",
+                            url: "http://20.127.228.182:8000/api/file/",
+                            // url: "http://localhost:8000/api/file/?age="+document.getElementById("age").value+"area="+ document.getElementById("area").value+"&total_weight="+document.getElementById("total_weight").value+"&no_of_birds="+document.getElementById("no_of_birds").value+"&avfeed="+document.getElementById("avfeed").value,
+                            data: bodyFormData,
+                            headers: { "Content-Type": "multipart/form-data"},
                             })
                                 .then(function (response) {
                                     // handle success
                                     console.log(response);
+
+                                    // alert(response.data.message)
+                                    result=response.data.message
+                                    if (result==0) document.getElementById("result").innerHTML="Not Helthy"
+                                    else document.getElementById("result").innerHTML="Helthy" 
+
+                                    if (result==0) document.getElementById("tip").innerHTML="Feed according standard FCR for their age"
+                                    else document.getElementById("tip").innerHTML="Continue feeding using bird feed"     
                                 })
                                 .catch(function (error) {
                                     // handle error
