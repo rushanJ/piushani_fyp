@@ -64,7 +64,7 @@ class FileAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateM
             no_of_birds= float(request.data['no_of_birds'])
             av_weight= total_weight/no_of_birds
             avfeed= float(request.data['avfeed'])
-            fcr= av_weight/avfeed
+            fcr= avfeed/av_weight
 
             print(age,area,total_weight, no_of_birds,av_weight,avfeed,fcr)
             lrRes = predictLR(age,area,total_weight, no_of_birds,av_weight,avfeed,fcr)
